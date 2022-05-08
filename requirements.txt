@@ -4,3 +4,4 @@ python-twitter
 requests
 requests-oauthlib
 urllib3
+pyyaml
