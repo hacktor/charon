@@ -1,0 +1,21 @@
+---
+link_to_mastodon: false
+link_to_twitter: false
+tags_to_append: 2
+post_media: true
+mastodon:
+  app_name: twitter-appname
+  api_base_url: https://mstdn.social
+  user_base_url: https://mstdn.social/@username
+  client_key: xxxxxxxxxxxxx
+  client_secret: xxxxxxxxxxxxx
+  access_token: xxxxxxxxxxxxx
+
+twitter:
+  app_name: mastodon-appname
+  consumer_key: xxxxxxxxxxxxx
+  consumer_secret: xxxxxxxxxxxxx
+  access_token: xxxxxxxxxxxxx
+  access_token_secret: xxxxxxxxxxxxx
+
+
