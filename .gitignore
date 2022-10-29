@@ -1,2 +1,4 @@
+config.yaml
 venv
 env
+.env
