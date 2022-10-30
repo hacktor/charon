@@ -5,7 +5,7 @@
 Charon - Ferry toots and tweets between Mastodon and Twitter
 """
 
-from threading import Thread
+from threading import Thread, Lock
 import argparse
 from collections import namedtuple
 import html
@@ -39,7 +39,7 @@ formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(messag
 ch.setFormatter(formatter)
 logger.addHandler(ch)
 
-# Read config from JSON file
+# Read config from YAML config file
 if not os.path.exists(args.config):
     exit("{} does not exist".format(args.config))
 config = None
@@ -70,6 +70,20 @@ twitter = Twitter.Api(
 # (also useful for checking the connection)
 mastodon_user = mastodon.account_verify_credentials()
 twitter_user = twitter.VerifyCredentials()
+
+
+class LastId:
+    """ Shared class for remembering last ID's """
+    lasttweet = None
+    tweetlock = Lock()
+
+    def get_lasttweet():
+        with LastId.tweetlock:
+            return LastId.lasttweet
+
+    def set_lasttweet(t):
+        with LastId.tweetlock:
+            LastId.lasttweet = t
 
 
 class StatusReceiver(StreamListener):
@@ -120,7 +134,7 @@ class StatusReceiver(StreamListener):
 
         # Pass the resulting HTML to BeautifulSoup and extract all text
         content = BeautifulSoup(content, 'html.parser')
-        content = content.get_text()
+        content = "{}: {}".format(config['twitter']['prefix'], content.get_text())
 
         # Filter @username@twitter.com mentions
         content = content.replace("@twitter.com", "")
@@ -245,7 +259,6 @@ def process_tweets(tweets, tweet_media):
 
 
 def twitterpoll():
-    last_id = 0
     while 1:
         try:
             logger.info("Polling twitter for user {}".format(twitter_user.screen_name))
@@ -254,22 +267,20 @@ def twitterpoll():
                     exclude_replies=True,
                     count=1
                 ):
-                soup = BeautifulSoup(status.source, 'html.parser')
-                source = soup.find('a').text
 
-                if not last_id:
+                lasttweet = LastId.get_lasttweet()
+                if not lasttweet:
                     logger.info(f"Skipping last known twitter status id {status.id}")
-                    last_id = status.id
-                elif source == config['twitter']['app_name']:
-                    logger.info("SKIPPING TWITTER SOURCE:", source)
-                elif status.id > last_id:
+                    LastId.set_lasttweet(status.id)
+                elif config['twitter']['prefix'] in status.text:
+                    logger.info("Skipping Mastodon source")
+                elif status.id > lasttweet:
                     logger.info(f"Tweet Text: {status.text}")
-                    logger.info(f"Tweet Created: {status.created_at}")
-                    #mastodon.toot(f"{status.text}\n\nhttps://twitter.com/{status.user.screen_name}/status/{status.id}\n")
+                    LastId.set_lasttweet(status.id)
+                    mastodon.toot(f"{status.text}\n\nhttps://twitter.com/{status.user.screen_name}/status/{status.id}\n")
                     logger.info("NOT TOOTING")
-                    print("TWITTER SOURCE:", source)
                 else:
-                    logger.info(f"Found tweet ID: {status.id}; LAST_ID: {last_id}, skipping")
+                    logger.info(f"Found tweet ID: {status.id}; LAST_ID: {lasttweet}, skipping")
         except Exception as ex:
             logger.error("Catched unknown Exception: %s" % ex)
         sleep(30)
