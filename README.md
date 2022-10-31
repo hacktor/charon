@@ -1,7 +1,7 @@
 # Charon Mastodon <-> twitter ferry
 
 simple Bot for syncing tweets and toots between a single Mastodon and Twitter account.
-iI call it Charon, for obvious reasons ;-)
+I call it Charon, for obvious reasons ;-)
 
 ## Configuration
 
