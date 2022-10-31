@@ -273,14 +273,17 @@ def twitterpoll():
                     logger.info(f"Skipping last known twitter status id {status.id}")
                     LastId.set_lasttweet(status.id)
                 elif config['twitter']['prefix'] in status.text:
-                    logger.info("Skipping Mastodon source")
+                    logger.debug("Skipping Mastodon source")
                 elif status.id > lasttweet:
-                    logger.info(f"Tweet Text: {status.text}")
+                    logger.debug(f"Tweet Text: {status.text}")
                     LastId.set_lasttweet(status.id)
-                    mastodon.toot(f"{status.text}\n\nhttps://twitter.com/{status.user.screen_name}/status/{status.id}\n")
-                    logger.info("NOT TOOTING")
+                    toot = f"{status.text}\n"
+                    if config['link_to_twitter']:
+                        toot += f"\nhttps://twitter.com/{status.user.screen_name}/status/{status.id}"
+                    mastodon.toot(toot)
+                    logger.info("TOOT status.id")
                 else:
-                    logger.info(f"Found tweet ID: {status.id}; LAST_ID: {lasttweet}, skipping")
+                    logger.debug(f"Found tweet ID: {status.id}; LAST_ID: {lasttweet}, skipping")
         except Exception as ex:
             logger.error("Catched unknown Exception: %s" % ex)
         sleep(30)

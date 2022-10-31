@@ -12,7 +12,7 @@ mastodon:
   access_token: xxxxxxxxxxxxx
 
 twitter:
-  app_name: mastodon-appname
+  prefix: '@user@mastodon.social'
   consumer_key: xxxxxxxxxxxxx
   consumer_secret: xxxxxxxxxxxxx
   access_token: xxxxxxxxxxxxx
