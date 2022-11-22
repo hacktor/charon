@@ -134,7 +134,8 @@ class StatusReceiver(StreamListener):
 
         # Pass the resulting HTML to BeautifulSoup and extract all text
         content = BeautifulSoup(content, 'html.parser')
-        content = "{}: {}".format(config['twitter']['prefix'], content.get_text())
+        if 'prefix' in config['twitter']:
+            content = "{}: {}".format(config['twitter']['prefix'], content.get_text())
 
         # Filter @username@twitter.com mentions
         content = content.replace("@twitter.com", "")
@@ -272,7 +273,7 @@ def twitterpoll():
                 if not lasttweet:
                     logger.info(f"Skipping last known twitter status id {status.id}")
                     LastId.set_lasttweet(status.id)
-                elif config['twitter']['prefix'] in status.text:
+                elif 'prefix' in config['twitter'] and config['twitter']['prefix'] in status.text:
                     logger.debug("Skipping Mastodon source")
                 elif status.id > lasttweet:
                     logger.debug(f"Tweet Text: {status.text}")
