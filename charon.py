@@ -136,6 +136,8 @@ class StatusReceiver(StreamListener):
         content = BeautifulSoup(content, 'html.parser')
         if 'prefix' in config['twitter']:
             content = "{}: {}".format(config['twitter']['prefix'], content.get_text())
+        else:
+            content = content.get_text()
 
         # Filter @username@twitter.com mentions
         content = content.replace("@twitter.com", "")
@@ -286,7 +288,7 @@ def twitterpoll():
                 else:
                     logger.debug(f"Found tweet ID: {status.id}; LAST_ID: {lasttweet}, skipping")
         except Exception as ex:
-            logger.error("Catched unknown Exception: %s" % ex)
+            logger.error("Catched unknown Exception in Twitterpoll: %s" % ex)
         sleep(30)
 
 # Start twitterpoll as a thread
@@ -306,4 +308,4 @@ while 1:
     except MastodonNetworkError as ex:
         logger.error("Catched MastodonNetworkError: %s" % ex)
     except Exception as ex:
-        logger.error("Catched unknown Exception: %s" % ex)
+        logger.error("Catched unknown StreamListener Exception: %s" % ex)
