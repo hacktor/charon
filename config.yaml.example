@@ -1,21 +1,21 @@
 ---
 link_to_mastodon: false
-link_to_twitter: false
+link_to_twitter: true
 tags_to_append: 2
 post_media: true
 mastodon:
-  app_name: twitter-appname
-  api_base_url: https://mstdn.social
-  user_base_url: https://mstdn.social/@username
-  client_key: xxxxxxxxxxxxx
-  client_secret: xxxxxxxxxxxxx
-  access_token: xxxxxxxxxxxxx
+  app_name: twitter-gateway
+  api_base_url: https://mastodon.social
+  user_base_url: https://mastodon.social/@username
+  client_key: xx_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  client_secret: xxxxxxxxxxxxxxxx_xxxxxxxxxxxxxxxxxxxxxxxxxx
+  access_token: xxxxxxxxxxx-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 twitter:
-  prefix: '@user@mastodon.social'
-  consumer_key: xxxxxxxxxxxxx
-  consumer_secret: xxxxxxxxxxxxx
-  access_token: xxxxxxxxxxxxx
-  access_token_secret: xxxxxxxxxxxxx
-
+  app_name: mastodon-gateway
+  prefix: '@username@mastodon.social'
+  consumer_key: xxxxxxxxxxxxxxxxxxxxxxxxx
+  consumer_secret: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  access_token: xxxxxxxx-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  access_token_secret: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
